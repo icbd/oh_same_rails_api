@@ -1,0 +1,20 @@
+default: &default
+  adapter: mysql2
+  encoding: utf8mb4
+  reconnect: false
+  pool: 5
+  username: root
+  password: root123
+  socket: /tmp/mysql.sock
+
+development:
+  <<: *default
+  database: oh_same_api_dev
+
+test:
+  <<: *default
+  database: oh_same_api_test
+
+production:
+  <<: *default
+  database: oh_same_api_prod

@@ -1,0 +1,61 @@
+class User < ApplicationRecord
+  # 昵称
+  validates :name,
+            presence: true,
+            length: {maximum: 100}
+
+  # 邮箱
+  before_save :downcase_email
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-]+(\.[a-z\d\-]+)*\.[a-z]+\z/i
+  validates :email,
+            presence: true,
+            length: {maximum: 255},
+            format: {with: VALID_EMAIL_REGEX},
+            uniqueness: {case_sensitive: false}
+
+  # 密码
+  attr_accessor :password
+  before_create :password_hash_init
+  validates :password,
+            length: {minimum: 6}
+
+  # 性别
+  enum sex: {
+      secret: -1,
+      girl: 0,
+      boy: 1
+  }
+  validates :sex, inclusion: sexes.keys
+
+  # 用户邮箱激活
+  attr_accessor :activation_token
+  before_create :init_user
+
+
+  # 用户token, 每次登陆更新一次, 仅允许单一设备在线
+  def update_login_token
+    login_token = "#{generate_token}+#{self.id}"
+    update_attribute(:login_token, login_token)
+  end
+
+
+  private
+
+
+  # 新用户初始化
+  def init_user
+    self.actived = false
+    self.activation_token = generate_token
+    self.activation_hash = calc_hash(self.activation_token)
+  end
+
+
+  # DB内全部以小写存储
+  def downcase_email
+    self.email = self.email.downcase
+  end
+
+  def password_hash_init
+    self.password_hash = calc_hash(self.password)
+  end
+end
