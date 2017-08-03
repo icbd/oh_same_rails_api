@@ -36,6 +36,19 @@ class User < ApplicationRecord
   def update_login_token
     login_token = "#{generate_token}+#{self.id}"
     update_attribute(:login_token, login_token)
+
+    redis.set(redisKey("auth_token", user.login_token), user.id)
+  end
+
+  # 验证login_token是否有效
+  # 默认强制需要
+  def auth(must=true)
+    user_id = redis.get(redisKey("auth_token", self.login_token)).to_i
+    if must && user_id==0
+      raise DiyExceptions::AuthMustLogin, "请您先登录"
+    end
+
+    user_id
   end
 
 

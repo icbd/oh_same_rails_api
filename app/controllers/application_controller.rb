@@ -4,10 +4,19 @@ class ApplicationController < ActionController::API
   # 引入全局helper
   include ::ApplicationTools
 
+  # redis keys, 全局统一管理
+  include ::RedisKeys
+
+  # 自定义异常
+  included ::DiyExceptions
+  rescue_from DiyExceptions::AuthMustLogin do |ex|
+    failed(2, ex.message)
+  end
+
 
   # 完全成功的请求
   def success(info)
-    return render json: {
+    render json: {
         code: 0,
         info: info
     }
@@ -15,16 +24,18 @@ class ApplicationController < ActionController::API
 
   # 业务上失败的请求, code > 0
   def failed(code, info)
-    return render json: {
+    render json: {
         code: code,
         info: info
     }
   end
 
   private
+
+  # 开发模式下, 打印响应结果
   def log_response
     if Rails.env.development?
-      logger.info("\n>>>\n" + response_body.to_json + "\n<<<\n")
+      Rails.logger.info("\n>>>\n" + response_body.to_json + "\n<<<\n")
     end
   end
 end
