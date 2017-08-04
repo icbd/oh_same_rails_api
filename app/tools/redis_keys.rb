@@ -4,7 +4,7 @@ module RedisKeys
     case key
       when "auth_token"
         token = args[0]
-        "str#auth_token:#{token}"
+        "str_auth_token:#{token}"
       else
         ""
     end

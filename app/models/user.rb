@@ -34,10 +34,12 @@ class User < ApplicationRecord
 
   # 用户token, 每次登陆更新一次, 仅允许单一设备在线
   def update_login_token
-    login_token = "#{generate_token}+#{self.id}"
+    login_token = "#{generate_token}_#{self.id}"
     update_attribute(:login_token, login_token)
 
-    redis.set(redisKey("auth_token", user.login_token), user.id)
+    redis_key = redisKey("auth_token", self.login_token)
+    redis.set(redis_key, self.id)
+    redis.expire(redis_key, 7.days.to_i)
   end
 
   # 验证login_token是否有效
