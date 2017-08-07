@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170802074833) do
+ActiveRecord::Schema.define(version: 20170806100325) do
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string "email", null: false, comment: "唯一/非空/加索引"
@@ -24,6 +24,8 @@ ActiveRecord::Schema.define(version: 20170802074833) do
     t.integer "sex", default: -1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "channel_count", default: 0
+    t.integer "content_count", default: 0
     t.index ["email"], name: "index_users_on_email"
   end
 
