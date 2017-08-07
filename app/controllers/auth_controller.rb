@@ -27,6 +27,7 @@ class AuthController < ApplicationController
     end
   end
 
+  # 仅仅验证Redis中的Token
   def auth
     login_token = params[:login_token].strip rescue ""
     uid = params[:uid] rescue 0

@@ -32,7 +32,8 @@ class User < ApplicationRecord
   before_create :init_user
 
 
-  # 用户token, 每次登陆更新一次, 仅允许单一设备在线
+  # 用户token, 每次登陆更新一次, 仅允许最新单一设备在线.
+  # Controller中的 /auth/auth仅仅验证Redis中的token, 允许多设备通过.
   def update_login_token
     login_token = "#{generate_token}_#{self.id}"
     update_attribute(:login_token, login_token)
