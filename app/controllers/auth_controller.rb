@@ -60,7 +60,7 @@ class AuthController < ApplicationController
     put_policy = Qiniu::Auth::PutPolicy.new(
         bucket, # 存储空间
         key, # 指定上传的资源名，如果传入 nil，就表示不指定资源名，将使用默认的资源名
-        60 # token 过期时间，默认为 60 秒
+        600 # token 过期时间，默认为 600 秒
     )
 
     uptoken = Qiniu::Auth.generate_uptoken(put_policy)
