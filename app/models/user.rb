@@ -17,7 +17,8 @@ class User < ApplicationRecord
   attr_accessor :password
   before_create :password_hash_init
   validates :password,
-            length: {minimum: 6}
+            length: {minimum: 6},
+            :if => :password
 
   # 性别
   enum sex: {
@@ -32,10 +33,26 @@ class User < ApplicationRecord
   before_create :init_user
 
 
-  # 用户token, 每次登陆更新一次, 仅允许单一设备在线
+  # 用户token, 每次登陆更新一次, 仅允许最新单一设备在线.
+  # Controller中的 /auth/auth仅仅验证Redis中的token, 允许多设备通过.
   def update_login_token
-    login_token = "#{generate_token}+#{self.id}"
+    login_token = "#{generate_token}_#{self.id}"
     update_attribute(:login_token, login_token)
+
+    redis_key = redisKey("auth_token", self.login_token)
+    redis.set(redis_key, self.id)
+    redis.expire(redis_key, 7.days.to_i)
+  end
+
+  # 验证login_token是否有效
+  # 默认强制需要
+  def auth(must=true)
+    user_id = redis.get(redisKey("auth_token", self.login_token)).to_i
+    if must && user_id==0
+      raise DiyExceptions::AuthMustLogin, "请您先登录"
+    end
+
+    user_id
   end
 
 
