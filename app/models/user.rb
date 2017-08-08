@@ -17,7 +17,8 @@ class User < ApplicationRecord
   attr_accessor :password
   before_create :password_hash_init
   validates :password,
-            length: {minimum: 6}
+            length: {minimum: 6},
+            :if => :password
 
   # 性别
   enum sex: {
