@@ -1,4 +1,7 @@
 class AuthController < ApplicationController
+
+
+  # POST
   def login
     email = params[:email].strip rescue ""
     password = params[:password] rescue ""
@@ -12,6 +15,8 @@ class AuthController < ApplicationController
     end
   end
 
+
+  # POST
   def register
     email = params[:email].strip rescue ""
     password = params[:password] rescue ""
@@ -27,26 +32,71 @@ class AuthController < ApplicationController
     end
   end
 
+
+  # POST
   # 仅仅验证Redis中的Token
   def auth
     login_token = params[:login_token].strip rescue ""
-    uid = params[:uid] rescue 0
+    uid = params[:uid].to_i rescue 0
 
-    if login_token.blank? || uid.blank?
-      return failed 2, "请登录"
-    end
-
-    redis_key = redisKey("auth_token", login_token)
-    if uid == redis.get(redis_key).to_i
+    if redis_token_auth(login_token, uid)
       success "验证通过"
     else
       failed 2, "登录过期,请重新登录."
     end
   end
 
+
+  # POST
   def logout
     render json: {
         action: "logout"
     }
   end
+
+
+  # GET
+  def uptoken
+    login_token = params[:login_token].strip rescue ""
+    uid = params[:uid].to_i rescue 0
+
+    unless redis_token_auth(login_token, uid)
+      failed 2, "登录过期,请重新登录."
+      return
+    end
+
+    bucket = 'oh-same'
+    key = nil
+
+    put_policy = Qiniu::Auth::PutPolicy.new(
+        bucket, # 存储空间
+        key, # 指定上传的资源名，如果传入 nil，就表示不指定资源名，将使用默认的资源名
+        120 # token 过期时间，默认为 120 秒
+    )
+
+    uptoken = Qiniu::Auth.generate_uptoken(put_policy)
+
+    render json: {
+        uptoken: uptoken
+    }
+  end
+
+  
+  private
+
+
+  def redis_token_auth(login_token, uid)
+    if login_token.blank? || uid.blank?
+      return false
+    end
+
+    redis_key = redisKey("auth_token", login_token)
+    if uid == redis.get(redis_key).to_i
+      true
+    else
+      false
+    end
+  end
+
+
 end
