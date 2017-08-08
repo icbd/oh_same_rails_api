@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   post 'auth/register'
   post 'auth/auth'
   post 'auth/logout'
-  get 'auth/uptoken'
+  post 'auth/uptoken'
 
 
   root 'hello#index'
