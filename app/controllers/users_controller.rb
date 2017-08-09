@@ -8,7 +8,7 @@ class UsersController < ApplicationController
     if user.update_attributes(update_user_params)
       success user
     else
-      failed 5, user.errors.full_messages
+      failed 4, user.errors.full_messages
     end
 
   end

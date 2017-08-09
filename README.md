@@ -8,9 +8,11 @@ failed code | description
 0| 成功
 2| 身份验证失败
 3| 参数错误
+4| 条件错误
+5| 系统错误
 
 ## Redis 结构
 
 key | value | description | type
 ---|---|---
-"str#auth_token:#{token}"| 用户ID | 验证login_token是否有效 | string
+"str_auth_token:_{token}" | 用户ID | 验证login_token是否有效 | string

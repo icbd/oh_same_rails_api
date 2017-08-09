@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  root 'hello#index'
+  get '/t', to: 'hello#t'
+
   post 'auth/login'
   post 'auth/register'
   post 'auth/auth'
@@ -6,10 +9,12 @@ Rails.application.routes.draw do
   post 'auth/uptoken'
 
 
-  root 'hello#index'
-  get '/t', to: 'hello#t'
-
   resources :users do
+    member do
+    end
+  end
+
+  resource :channels do
     member do
     end
   end

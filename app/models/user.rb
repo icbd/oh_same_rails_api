@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  has_many :channels
+
   # 昵称
   validates :name,
             presence: true,
