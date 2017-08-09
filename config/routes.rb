@@ -18,7 +18,4 @@ Rails.application.routes.draw do
     member do
     end
   end
-
-  get 'temp', to: "channels#create"
-
 end

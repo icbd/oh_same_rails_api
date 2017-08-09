@@ -4,7 +4,7 @@ class Channel < ApplicationRecord
   # 标题
   validates :title,
             presence: true,
-            length: {in: 1..15}
+            length: {in: 1..10}
 
   validates :description,
             length: {maximum: 200}
