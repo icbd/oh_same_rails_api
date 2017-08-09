@@ -17,7 +17,7 @@ ActiveRecord::Schema.define(version: 20170809021008) do
     t.text "description", comment: "频道简介"
     t.string "icon", comment: "频道图标"
     t.integer "channel_type", default: 0, null: false, comment: "频道类型: 0,基本;1,音乐引用;2,电影引用;3,图书引用;4,打卡;5,投票;"
-    t.integer "comment_type", default: 0, null: false, comment: "评论类型: 0,公开评论;1,私密聊天;"
+    t.integer "comment_type", default: 0, null: false, comment: "评论类型: 0,私密聊天;1,公开评论;"
     t.integer "intimity", default: 0, null: false, comment: "公开类型: 0,完全公开;1,完全不公开;2,部分公开;"
     t.integer "posts_count", default: 0, null: false, comment: "频道下帖子计数器"
     t.bigint "user_id"
