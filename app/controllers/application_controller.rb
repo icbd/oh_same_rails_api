@@ -14,30 +14,48 @@ class ApplicationController < ActionController::API
   included ::DiyExceptions
   rescue_from DiyExceptions::AuthMustLogin do |ex|
     if ex.message == 'DiyExceptions::AuthMustLogin'
-      msg = "登录过期,请重新登录."
+      info = "登录过期,请重新登录."
     else
-      msg = ex.message
+      info = ex.message
     end
 
-    failed(2, msg)
+    render json: {
+        code: 2,
+        info: info
+    }
+  end
+
+  # 类比PHP die()
+  rescue_from DiyExceptions::RenderAndDie do |ex|
+
+    msg = JSON(ex.message) rescue [1, "RenderAndDie"]
+
+    resp = {
+        code: msg[0],
+        info: msg[1]
+    }
+
+    render json: resp
+
+    if Rails.env.development?
+      p ">>>"
+      p resp
+      p "<<<"
+    end
   end
 
 
   # 完全成功的请求
+  # 直接结束请求
   def success(info)
-    render json: {
-        code: 0,
-        info: info
-    }
+    raise DiyExceptions::RenderAndDie, [0, info].to_json
   end
 
 
   # 业务上失败的请求, code > 0
+  # 直接结束请求
   def failed(code, info)
-    render json: {
-        code: code,
-        info: info
-    }
+    raise DiyExceptions::RenderAndDie, [code, info].to_json
   end
 
 
@@ -72,7 +90,7 @@ class ApplicationController < ActionController::API
 
     # 抛异常, 直接终止后续操作
     if must && !ans
-      raise DiyExceptions::AuthMustLogin
+      raise DiyExceptions::AuthMustLogin, "身份认证失败,请登录"
     end
 
     ans
