@@ -37,11 +37,7 @@ class ApplicationController < ActionController::API
 
     render json: resp
 
-    if Rails.env.development?
-      p ">>>"
-      p resp
-      p "<<<"
-    end
+    logger.debug ">>>\n#{resp.to_json}<<<\n"
   end
 
 
@@ -61,7 +57,7 @@ class ApplicationController < ActionController::API
 
   # Redis token 身份认证
   # 认证通过返回 uid, 否则返回false
-  def redis_token_auth(login_token=nil, uid=nil, must: false)
+  def redis_token_auth(login_token=nil, uid=nil, must: true)
     ans = false
 
     if login_token.nil?

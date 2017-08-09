@@ -3,7 +3,7 @@ class ChannelsController < ApplicationController
 
   # POST
   def create
-    uid = redis_token_auth
+    uid = redis_token_auth(must: true)
 
     user = User.find(uid)
     channel = user.channels.build(create_channel_params)
@@ -21,6 +21,6 @@ class ChannelsController < ApplicationController
 
 
   def create_channel_params
-    params.require(:channel).permit(:name, :introduction, :channel_type, :comment_type, :intimity)
+    params.require(:channel).permit(:title, :introduction, :channel_type, :comment_type, :intimity)
   end
 end
