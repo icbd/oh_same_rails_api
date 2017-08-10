@@ -14,7 +14,7 @@ Rails.application.routes.draw do
     end
   end
 
-  resource :channels do
+  resources :channels do
     member do
     end
   end

@@ -14,5 +14,6 @@ failed code | description
 ## Redis 结构
 
 key | value | description | type
----|---|---
-"str_auth_token:_{token}" | 用户ID | 验证login_token是否有效 | string
+---|---|---|---
+"str_auth_token:#{token}" | 用户ID | 验证login_token是否有效 | string
+"hash_channel:#{channelID}" | 频道信息 | 频道基本信息缓存 | hash

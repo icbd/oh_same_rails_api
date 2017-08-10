@@ -12,8 +12,18 @@ class ChannelsController < ApplicationController
     else
       failed 4, channel.errors.full_messages
     end
+  end
 
 
+  # GET
+  def show
+    uid = redis_token_auth(must: false)
+
+    channelID = params['id'].to_i rescue failed(3, 'need channel_id')
+
+    channel = Channel.find(channelID) rescue failed(3, 'not found this channel')
+
+    success channel
   end
 
 

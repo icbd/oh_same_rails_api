@@ -76,7 +76,7 @@ class ApplicationController < ActionController::API
     if login_token.blank? || (uid==0)
       ans = false
     else
-      redis_key = redisKey("auth_token", login_token)
+      redis_key = redisKey(:auth_token, login_token)
       if uid == redis.get(redis_key).to_i
         ans = uid
       else
