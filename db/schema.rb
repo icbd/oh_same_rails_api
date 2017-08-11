@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170809021008) do
+ActiveRecord::Schema.define(version: 20170810104919) do
 
   create_table "channels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string "title", null: false, comment: "频道名称"
@@ -24,6 +24,20 @@ ActiveRecord::Schema.define(version: 20170809021008) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_channels_on_user_id"
+  end
+
+  create_table "posts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+    t.text "content", comment: "帖子正文文本,最多1000字"
+    t.text "attachment", comment: "帖子附件,JSON"
+    t.integer "attach_type", null: false, comment: "附件类型, copy from channel_type"
+    t.boolean "available", default: true, comment: "是否公开"
+    t.bigint "channel_id"
+    t.bigint "user_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["channel_id"], name: "index_posts_on_channel_id"
+    t.index ["created_at"], name: "index_posts_on_created_at"
+    t.index ["user_id"], name: "index_posts_on_user_id"
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
@@ -44,4 +58,6 @@ ActiveRecord::Schema.define(version: 20170809021008) do
   end
 
   add_foreign_key "channels", "users"
+  add_foreign_key "posts", "channels"
+  add_foreign_key "posts", "users"
 end

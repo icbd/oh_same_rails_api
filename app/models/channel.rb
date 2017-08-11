@@ -1,5 +1,7 @@
 class Channel < ApplicationRecord
   belongs_to :user
+  has_many :posts
+
 
   # 标题
   validates :title,

@@ -18,4 +18,9 @@ Rails.application.routes.draw do
     member do
     end
   end
+
+  resources :posts do
+    member do
+    end
+  end
 end
