@@ -14,6 +14,48 @@ class UsersController < ApplicationController
   end
 
 
+  # GET
+  # pure posts list
+  # /users/:id/posts
+  def posts
+    # uid = redis_token_auth(must: false)
+
+    page = Integer(params[:page]) rescue 1
+    per_page = Integer(params[:per_page]) rescue 5
+    user_id = Integer(params[:id]) rescue failed(3, ["缺少user_id"])
+
+
+    posts_list = Post.unscoped.includes(:user).where(user_id: user_id)
+                     .offset((page - 1)*per_page).limit(per_page)
+                     .order("created_at DESC")
+
+    posts_total = Post.unscoped.where(user_id: user_id).count
+
+    success render_to_string json: {list: posts_list, total: posts_total}, include: {:user => {only: [:id, :name, :avatar]}}
+  end
+
+
+  # GET
+  # pure posts list
+  # /users/:id/channels
+  def channels
+    # uid = redis_token_auth(must: false)
+
+    page = Integer(params[:page]) rescue 1
+    per_page = Integer(params[:per_page]) rescue 5
+    user_id = Integer(params[:id]) rescue failed(3, ["缺少user_id"])
+
+
+    channel_list = Channel.unscoped.includes(:user).where(user_id: user_id)
+                       .offset((page - 1)*per_page).limit(per_page)
+                       .order("created_at DESC")
+
+    channel_total = Channel.unscoped.where(user_id: user_id).count
+
+    success render_to_string json: {list: channel_list, total: channel_total}, include: {:user => {only: [:id, :name, :avatar]}}
+  end
+
+
   private
 
 
