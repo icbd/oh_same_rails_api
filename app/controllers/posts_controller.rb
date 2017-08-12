@@ -1,6 +1,6 @@
 class PostsController < ApplicationController
 
-  #POST
+  # POST
   def create
     uid = redis_token_auth(must: true)
 

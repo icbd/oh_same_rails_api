@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170810104919) do
+ActiveRecord::Schema.define(version: 20170812025257) do
 
   create_table "channels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string "title", null: false, comment: "频道名称"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20170810104919) do
     t.bigint "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "published", default: true
     t.index ["user_id"], name: "index_channels_on_user_id"
   end
 
@@ -30,9 +31,11 @@ ActiveRecord::Schema.define(version: 20170810104919) do
     t.text "content", comment: "帖子正文文本,最多1000字"
     t.text "attachment", comment: "帖子附件,JSON"
     t.integer "attach_type", null: false, comment: "附件类型, copy from channel_type"
-    t.boolean "available", default: true, comment: "是否公开"
+    t.boolean "published", default: true, comment: "是否公开"
     t.bigint "channel_id"
     t.bigint "user_id"
+    t.integer "view_count", default: 0, comment: "浏览量计数"
+    t.integer "same_count", default: 0, comment: "同感量计数"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_id"], name: "index_posts_on_channel_id"

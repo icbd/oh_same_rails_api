@@ -27,16 +27,12 @@ class ApplicationController < ActionController::API
 
   # 类比PHP die()
   rescue_from DiyExceptions::RenderAndDie do |ex|
-
     msg = JSON(ex.message) rescue [1, "RenderAndDie"]
-
     resp = {
         code: msg[0],
         info: msg[1]
     }
-
     render json: resp
-
     logger.debug ">>>\n#{resp.to_json}<<<\n"
   end
 
@@ -44,12 +40,14 @@ class ApplicationController < ActionController::API
   # 完全成功的请求
   # 直接结束请求
   def success(info)
+    info = JSON.parse(info) rescue info if info.instance_of?(String)
     raise DiyExceptions::RenderAndDie, [0, info].to_json
   end
 
 
   # 业务上失败的请求, code > 0
   # 直接结束请求
+  # 客户端统一处理方式: alert(data.info.join("\n"))
   def failed(code, info)
     raise DiyExceptions::RenderAndDie, [code, info].to_json
   end
