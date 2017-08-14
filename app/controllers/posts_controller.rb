@@ -7,7 +7,7 @@ class PostsController < ApplicationController
     user = User.find(uid)
     posts = user.posts.build(create_posts_params)
     if posts.save
-      success posts
+      success render_to_string json: posts, include: {:user => {only: [:id, :name, :avatar]}}
     else
       failed 4, posts.errors.full_messages
     end
