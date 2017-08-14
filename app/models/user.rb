@@ -1,4 +1,7 @@
 class User < ApplicationRecord
+  has_many :channels
+  has_many :posts
+
   # 昵称
   validates :name,
             presence: true,
@@ -39,7 +42,7 @@ class User < ApplicationRecord
     login_token = "#{generate_token}_#{self.id}"
     update_attribute(:login_token, login_token)
 
-    redis_key = redisKey("auth_token", self.login_token)
+    redis_key = redisKey(:auth_token, self.login_token)
     redis.set(redis_key, self.id)
     redis.expire(redis_key, 7.days.to_i)
   end
@@ -47,7 +50,7 @@ class User < ApplicationRecord
   # 验证login_token是否有效
   # 默认强制需要
   def auth(must=true)
-    user_id = redis.get(redisKey("auth_token", self.login_token)).to_i
+    user_id = redis.get(redisKey(:auth_token, self.login_token)).to_i
     if must && user_id==0
       raise DiyExceptions::AuthMustLogin, "请您先登录"
     end

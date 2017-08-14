@@ -13,10 +13,8 @@ class HelloController < ApplicationController
     end
 
 
-    u= User.find(4)
-    p u.auth
+    failed(129, {:heelo => "hello"})
 
-    render json: {"t" => "debug"}
 
     p "<<<debug@hello#t>>>"
   end

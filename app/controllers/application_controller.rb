@@ -14,36 +14,48 @@ class ApplicationController < ActionController::API
   included ::DiyExceptions
   rescue_from DiyExceptions::AuthMustLogin do |ex|
     if ex.message == 'DiyExceptions::AuthMustLogin'
-      msg = "登录过期,请重新登录."
+      info = "登录过期,请重新登录."
     else
-      msg = ex.message
+      info = ex.message
     end
 
-    failed(2, msg)
+    render json: {
+        code: 2,
+        info: info
+    }
+  end
+
+  # 类比PHP die()
+  rescue_from DiyExceptions::RenderAndDie do |ex|
+    msg = JSON(ex.message) rescue [1, "RenderAndDie"]
+    resp = {
+        code: msg[0],
+        info: msg[1]
+    }
+    render json: resp
+    logger.debug ">>>\n#{resp.to_json}<<<\n"
   end
 
 
   # 完全成功的请求
+  # 直接结束请求
   def success(info)
-    render json: {
-        code: 0,
-        info: info
-    }
+    info = JSON.parse(info) rescue info if info.instance_of?(String)
+    raise DiyExceptions::RenderAndDie, [0, info].to_json
   end
 
 
   # 业务上失败的请求, code > 0
+  # 直接结束请求
+  # 客户端统一处理方式: alert(data.info.join("\n"))
   def failed(code, info)
-    render json: {
-        code: code,
-        info: info
-    }
+    raise DiyExceptions::RenderAndDie, [code, info].to_json
   end
 
 
   # Redis token 身份认证
   # 认证通过返回 uid, 否则返回false
-  def redis_token_auth(login_token=nil, uid=nil, must: false)
+  def redis_token_auth(login_token=nil, uid=nil, must: true)
     ans = false
 
     if login_token.nil?
@@ -62,7 +74,7 @@ class ApplicationController < ActionController::API
     if login_token.blank? || (uid==0)
       ans = false
     else
-      redis_key = redisKey("auth_token", login_token)
+      redis_key = redisKey(:auth_token, login_token)
       if uid == redis.get(redis_key).to_i
         ans = uid
       else
@@ -72,7 +84,7 @@ class ApplicationController < ActionController::API
 
     # 抛异常, 直接终止后续操作
     if must && !ans
-      raise DiyExceptions::AuthMustLogin
+      raise DiyExceptions::AuthMustLogin, "身份认证失败,请登录"
     end
 
     ans

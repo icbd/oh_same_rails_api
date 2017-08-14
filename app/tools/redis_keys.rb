@@ -2,9 +2,12 @@ module RedisKeys
 
   def redisKey(key, *args)
     case key
-      when "auth_token"
+      when :auth_token #(key, token)
         token = args[0]
         "str_auth_token:#{token}"
+      when :channel #(key, channelID)
+        channelID = args[0]
+        "hash_channel:#{channelID}"
       else
         ""
     end
