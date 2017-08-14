@@ -34,8 +34,8 @@ ActiveRecord::Schema.define(version: 20170812025257) do
     t.boolean "published", default: true, comment: "是否公开"
     t.bigint "channel_id"
     t.bigint "user_id"
-    t.integer "view_count", default: 0, comment: "浏览量计数"
-    t.integer "same_count", default: 0, comment: "同感量计数"
+    t.integer "views_count", default: 0, comment: "浏览量计数"
+    t.integer "sames_count", default: 0, comment: "同感量计数"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["channel_id"], name: "index_posts_on_channel_id"
@@ -55,8 +55,8 @@ ActiveRecord::Schema.define(version: 20170812025257) do
     t.integer "sex", default: -1
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "channel_count", default: 0
-    t.integer "content_count", default: 0
+    t.integer "channels_count", default: 0
+    t.integer "posts_count", default: 0
     t.index ["email"], name: "index_users_on_email"
   end
 

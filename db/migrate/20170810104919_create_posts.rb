@@ -9,8 +9,8 @@ class CreatePosts < ActiveRecord::Migration[5.1]
       t.references :channel, foreign_key: true, index: true
       t.references :user, foreign_key: true, index: true
 
-      t.integer :view_count, default: 0, comment: "浏览量计数"
-      t.integer :same_count, default: 0, comment: "同感量计数"
+      t.integer :views_count, default: 0, comment: "浏览量计数"
+      t.integer :sames_count, default: 0, comment: "同感量计数"
 
       t.timestamps
     end
