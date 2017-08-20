@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::API
   after_action :log_response
+  before_action :page_perpage
 
 
   # 引入全局helper
@@ -99,5 +100,11 @@ class ApplicationController < ActionController::API
     if Rails.env.development?
       Rails.logger.info("\n>>>\n" + response_body.to_json + "\n<<<\n")
     end
+  end
+
+
+  def page_perpage
+    @page = Integer(params[:page]) rescue 1
+    @per_page = Integer(params[:per_page]) rescue 5
   end
 end

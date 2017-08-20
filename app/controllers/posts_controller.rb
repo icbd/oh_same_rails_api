@@ -1,6 +1,20 @@
 class PostsController < ApplicationController
 
+  # GET
+  # /posts/
+  def index
+    posts_list = Post
+                     .unscoped
+                     .includes(:user)
+                     .offset((@page - 1) * @per_page).limit(@per_page)
+                     .order("created_at DESC")
+    posts_total = Post.unscoped.count
+
+    success render_to_string json: {list: posts_list, total: posts_total}, include: {:user => {only: [:id, :name, :avatar]}}
+  end
+
   # POST
+  # /posts/
   def create
     uid = redis_token_auth(must: true)
 

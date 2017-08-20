@@ -1,7 +1,7 @@
 class HelloController < ApplicationController
   def index
     render json: {
-        "version" => "0.0.1"
+        "version" => "0.0.2"
     }
   end
 
