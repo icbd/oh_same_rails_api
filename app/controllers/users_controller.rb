@@ -1,5 +1,13 @@
 class UsersController < ApplicationController
 
+  # GET
+  # /users/:id/
+  def show
+    user = User.find(params['id'])
+    success user.basic_info
+  end
+
+
   # PATCH
   def update
     uid = redis_token_auth(must: true)

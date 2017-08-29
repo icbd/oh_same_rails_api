@@ -60,6 +60,14 @@ class User < ApplicationRecord
   end
 
 
+  # 用户不涉密的基本信息
+  def basic_info
+    self.attributes.select do |key, value|
+      ['id', 'name', 'avatar', 'created_at'].include?(key)
+    end
+  end
+
+
   private
 
 
