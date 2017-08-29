@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170812025257) do
+ActiveRecord::Schema.define(version: 20170818090958) do
 
   create_table "channels", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.string "title", null: false, comment: "频道名称"
@@ -27,6 +27,18 @@ ActiveRecord::Schema.define(version: 20170812025257) do
     t.index ["user_id"], name: "index_channels_on_user_id"
   end
 
+  create_table "comments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
+    t.text "content", null: false, comment: "评论正文"
+    t.text "attachment", comment: "评论附件,JSON"
+    t.boolean "published", default: true, comment: "是否公开"
+    t.bigint "posts_id"
+    t.bigint "users_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["posts_id"], name: "index_comments_on_posts_id"
+    t.index ["users_id"], name: "index_comments_on_users_id"
+  end
+
   create_table "posts", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb4" do |t|
     t.text "content", comment: "帖子正文文本,最多1000字"
     t.text "attachment", comment: "帖子附件,JSON"
@@ -38,6 +50,7 @@ ActiveRecord::Schema.define(version: 20170812025257) do
     t.integer "sames_count", default: 0, comment: "同感量计数"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "comments_count", default: 0
     t.index ["channel_id"], name: "index_posts_on_channel_id"
     t.index ["created_at"], name: "index_posts_on_created_at"
     t.index ["user_id"], name: "index_posts_on_user_id"
@@ -61,6 +74,8 @@ ActiveRecord::Schema.define(version: 20170812025257) do
   end
 
   add_foreign_key "channels", "users"
+  add_foreign_key "comments", "posts", column: "posts_id"
+  add_foreign_key "comments", "users", column: "users_id"
   add_foreign_key "posts", "channels"
   add_foreign_key "posts", "users"
 end

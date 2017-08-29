@@ -74,7 +74,9 @@ GEM
     nio4r (2.1.0)
     nokogiri (1.8.0)
       mini_portile2 (~> 2.2.0)
-    puma (3.9.1)
+    passenger (5.1.7)
+      rack
+      rake (>= 0.8.1)
     qiniu (6.8.1)
       json (~> 1.8)
       mime-types (~> 2.4, >= 2.4.0)
@@ -151,7 +153,7 @@ DEPENDENCIES
   jbuilder (~> 2.5)
   listen (>= 3.0.5, < 3.2)
   mysql2
-  puma (~> 3.7)
+  passenger (>= 5.0.25)
   qiniu (~> 6.8.1)
   rack-cors
   rails (~> 5.1.2)

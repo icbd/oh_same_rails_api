@@ -1,6 +1,7 @@
 class User < ApplicationRecord
   has_many :channels
   has_many :posts
+  has_many :comments
 
   # 昵称
   validates :name,
